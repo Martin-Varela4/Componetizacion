@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { InputField } from '../components/InputField'
 import { ErrorMessage } from '../components/ErrorMessage'
 import { SubmitButton } from '../components/SubmitButton'
-import { useAuth } from '../hook/useAuth'
+//import { useAuth } from '../hook/useAuth'
 
 export default function LoginForm() {
   const [form, setForm] = useState({ email: '', password: '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [ token, isAuthenticated, login, logout] = useAuth()
+  //const [ token, isAuthenticated, login, logout] = useAuth()
 
   function handleChange(e) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
