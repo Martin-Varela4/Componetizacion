@@ -1,21 +1,27 @@
+import { useState } from 'react';
+// Asegúrate de importar tu configuración de 'api' (por ejemplo axios)
+// import api from '../api';
 
 export const useAuth = () => {
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
+  // Agregamos 'async' a la función
+  const login = async (email, password) => {
+    const { data } = await api.post("/users/login", { email, password });
+    
+    setToken(data.token);
+    localStorage.setItem("token", data.token);
+  };
 
-     const [token, setToken] = useState(localStorage.getItem("token"));
+  // Agregamos la función logout para que no de error al exportarla
+  const logout = () => {
+    setToken(null);
+    localStorage.removeItem("token");
+  };
 
-     const login = (email, password) => {
-        const data = await api.post("/users/login", { email, password });
+  // Creamos una variable booleana para saber si está autenticado
+  const isAuthenticated = !!token;
 
-        const token = data.token;   
-
-        setToken(data.token);
-        localStorage.setItem("token", data.token);
-     
-
-
-
-        return {token, setToken, login, logout }
-
-
-}}
+  // El return debe ir FUERA de la función login
+  return { token, isAuthenticated, login, logout };
+};

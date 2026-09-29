@@ -1,10 +1,8 @@
 import * as Yup from "yup"
-import normalizedSchemaMessages from "../schemes/normalizedSchemaMessages"
 
 export const loginSchema = Yup.object({
     email: Yup.string()
         .trim()
-        .email(normalizedSchemaMessages.error.email)
         .required("El correo electrónico es obligatorio"),
 
     passwod: Yup.string()    

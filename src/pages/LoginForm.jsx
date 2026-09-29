@@ -1,87 +1,68 @@
-import { useState } from 'react'
-import { InputField } from '../components/InputField'
-import { ErrorMessage } from '../components/ErrorMessage'
-import { SubmitButton } from '../components/SubmitButton'
-import { loginSchema } from '../schemes/loginSchema'
-//import { useAuth } from '../hook/useAuth'
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { InputField } from '../components/InputField';
+import { ErrorMessage } from '../components/ErrorMessage';
+import { SubmitButton } from '../components/SubmitButton';
+import { loginSchema } from '../schemes/loginSchema';
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginForm() {
-  const [form, setForm] = useState({ email: '', password: '' })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [ token, isAuthenticated, login, logout] = useAuth()
-  let navigate = useNavigate(); 
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const { isAuthenticated, login } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirige cuando el usuario ya está autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/users', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   function handleChange(e) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleSubmit(e) {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
     try {
-
       await loginSchema.validate(form);
-    }catch (validateError) {
-
-      setError(validateError.message)
+      await login(form.email, form.password);
+    } catch (err) {
+      setError(
+        err.response?.data?.message || // error del backend (axios)
+        err.message ||                 // error de validación (Yup)
+        'Ocurrió un error al iniciar sesión'
+      );
+    } finally {
+      setLoading(false);
     }
-
-    // console.log(loginSchema.validate(form))
-
-
-    // Lógica backend
-
-    }
-
-  try {
-
-    await login(form.email, form.password)
-  } catch (loginError) {
-    setError(loginError.message)
   }
-  
-
-
-
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/users', { replace: true }); // Redirige al dashboard si el usuario está autenticado
-    }
-
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '320px' }}>
-      <h2>Iniciar Sesión</h2>
-
+    <form onSubmit={handleSubmit} noValidate>
       <InputField
         label="Email"
         type="email"
         name="email"
         value={form.email}
         onChange={handleChange}
-        autoComplete="username"
       />
-
       <InputField
         label="Contraseña"
         type="password"
         name="password"
         value={form.password}
         onChange={handleChange}
-        autoComplete="current-password"
       />
-
       <ErrorMessage message={error} />
-
-      <SubmitButton
-        isLoading={loading}
-        text="Ingresar"
-        loadingText="Ingresando..."
-      />
+      <SubmitButton loading={loading}>Iniciar sesión</SubmitButton>
     </form>
-  )
+  );
 }
