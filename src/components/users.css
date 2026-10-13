@@ -30,18 +30,23 @@
   margin-bottom: 10px;
 }
 
-/* BADGES */
-.badge {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  color: white;
+/* CABECERA DE PÁGINA */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-.active {
-  background: #22c55e;
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.inactive {
-  background: #ef4444;
+.btn {
+  padding: 6px 12px;
+  cursor: pointer;
 }

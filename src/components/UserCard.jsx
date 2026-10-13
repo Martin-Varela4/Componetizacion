@@ -1,30 +1,18 @@
-export default function UserCard({ user, toggleStatus }) {
-  const isActive = user.status === "Activo";
+const formatDate = (value) => {
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? '—' : date.toLocaleDateString('es-AR')
+}
 
-  const badgeClass = isActive
-    ? "badge active"
-    : "badge inactive";
-
+export default function UserCard({ user }) {
   return (
     <div className="card">
       <div className="card-header">
-        <h2>{user.name}</h2>
-
-        <span className={badgeClass}>
-          {user.status}
-        </span>
+        <h2>{user.nombre}</h2>
       </div>
 
       <p><strong>ID:</strong> {user.id}</p>
       <p><strong>Email:</strong> {user.email}</p>
-      <p><strong>Rol:</strong> {user.role}</p>
-
-      <button
-        className="btn"
-        onClick={() => toggleStatus(user.id)}
-      >
-        Cambiar estado
-      </button>
+      <p><strong>Alta:</strong> {formatDate(user.creadoEn)}</p>
     </div>
-  );
+  )
 }

@@ -1,14 +1,24 @@
-import * as Yup from "yup"
-import normalizedSchemaMessages from "../schemes/normalizedSchemaMessages"
+import * as Yup from 'yup'
 
+// Reglas alineadas con el backend (user.validation.ts)
 export const registerSchema = Yup.object({
-    email: Yup.string()
-        .trim()
-        .email(normalizedSchemaMessages.error.email)
-        .required("El correo electrónico es obligatorio"),
+  nombre: Yup.string()
+    .trim()
+    .min(2, 'El nombre debe tener al menos 2 caracteres')
+    .max(100, 'El nombre no puede tener más de 100 caracteres')
+    .required('El nombre es obligatorio'),
 
-    passwod: Yup.string()    
-        .min(6, "La contraseña debe tener al menos 6 caracteres")
-        .max(11, "La contraseña no puede tener mas de 11 caracteres")
-        .required("La contraseña es obligatoria"),
+  email: Yup.string()
+    .trim()
+    .email('El correo electrónico no es válido')
+    .required('El correo electrónico es obligatorio'),
+
+  password: Yup.string()
+    .min(8, 'La contraseña debe tener al menos 8 caracteres')
+    .max(72, 'La contraseña no puede tener más de 72 caracteres')
+    .required('La contraseña es obligatoria'),
+
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('password')], 'Las contraseñas no coinciden')
+    .required('Repetí la contraseña'),
 })
